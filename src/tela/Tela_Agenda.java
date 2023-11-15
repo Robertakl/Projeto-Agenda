@@ -19,7 +19,7 @@ import javax.swing.table.DefaultTableModel;
 public class Tela_Agenda extends javax.swing.JFrame {
 //Criamos um vetor de string dos valores contidos na tabela.
     //Criamos os campos existentes na tabela.
-    DefaultTableModel tmContato = new DefaultTableModel(null, new String[]{"Codigo","Nome","Endereco","email","Telefone","email","Sexo" });
+    DefaultTableModel tmContato = new DefaultTableModel(null, new String[]{"Codigo","Nome","Endereco","Telefone","email","Sexo"});
     List<Contato> contatos;
     ListSelectionModel lsmContato;
 

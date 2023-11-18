@@ -9,8 +9,12 @@ import javax.swing.JOptionPane;
 import modelo.Contato;
 import java.sql.SQLException;
 import java.util.List;
+import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -59,8 +63,10 @@ public class Tela_Agenda extends javax.swing.JFrame {
         btnSalvar = new javax.swing.JButton();
         btnSair = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblContatos = new javax.swing.JTable();
         txtPesquisa = new javax.swing.JTextField();
+        btnExcluirTabela = new javax.swing.JButton();
+        btnAlterarTabela = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         mnCodigo = new javax.swing.JMenuItem();
@@ -236,102 +242,135 @@ public class Tela_Agenda extends javax.swing.JFrame {
                 .addComponent(btnSalvar, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSair, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(15, 15, 15))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
+                .addContainerGap(14, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAlterar)
                     .addComponent(btnNovo)
                     .addComponent(btnExcluir)
                     .addComponent(btnSalvar)
-                    .addComponent(btnSair))
-                .addContainerGap(17, Short.MAX_VALUE))
+                    .addComponent(btnSair)))
         );
 
-        jTable1.setModel(tmContato);
-        jScrollPane1.setViewportView(jTable1);
-
-        txtPesquisa.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtPesquisaActionPerformed(evt);
+        tblContatos.setModel(tmContato);
+        tblContatos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        lsmContato = tblContatos.getSelectionModel();
+        lsmContato.addListSelectionListener( new ListSelectionListener() {
+            public void valueChanged (ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()){
+                    tblContatosLinhaSelecionado(tblContatos);
+                }
             }
-        });
+        }
+    );
+    jScrollPane1.setViewportView(tblContatos);
 
-        jMenu1.setText("Consultas");
+    txtPesquisa.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            txtPesquisaActionPerformed(evt);
+        }
+    });
 
-        mnCodigo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        mnCodigo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/icons8-lápis-24.png"))); // NOI18N
-        mnCodigo.setMnemonic('c');
-        mnCodigo.setText("Por Código");
-        mnCodigo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnCodigoActionPerformed(evt);
-            }
-        });
-        jMenu1.add(mnCodigo);
+    btnExcluirTabela.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/icons8-excluir-24.png"))); // NOI18N
+    btnExcluirTabela.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            btnExcluirTabelaActionPerformed(evt);
+        }
+    });
 
-        mnNome.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        mnNome.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/icons8-lápis-24.png"))); // NOI18N
-        mnNome.setMnemonic('n');
-        mnNome.setText("Por Nome");
-        mnNome.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnNomeActionPerformed(evt);
-            }
-        });
-        jMenu1.add(mnNome);
+    btnAlterarTabela.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/icons8-lápis-24.png"))); // NOI18N
+    btnAlterarTabela.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            btnAlterarTabelaActionPerformed(evt);
+        }
+    });
 
-        jMenuBar1.add(jMenu1);
+    jMenu1.setText("Consultas");
 
-        jMenu2.setText("Ajuda");
+    mnCodigo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+    mnCodigo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/icons8-lápis-24.png"))); // NOI18N
+    mnCodigo.setMnemonic('c');
+    mnCodigo.setText("Por Código");
+    mnCodigo.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            mnCodigoActionPerformed(evt);
+        }
+    });
+    jMenu1.add(mnCodigo);
 
-        jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/icons8-to-go-24.png"))); // NOI18N
-        jMenuItem4.setText("Sobre");
-        jMenu2.add(jMenuItem4);
+    mnNome.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+    mnNome.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/icons8-lápis-24.png"))); // NOI18N
+    mnNome.setMnemonic('n');
+    mnNome.setText("Por Nome");
+    mnNome.addActionListener(new java.awt.event.ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent evt) {
+            mnNomeActionPerformed(evt);
+        }
+    });
+    jMenu1.add(mnNome);
 
-        jMenuBar1.add(jMenu2);
+    jMenuBar1.add(jMenu1);
 
-        setJMenuBar(jMenuBar1);
+    jMenu2.setText("Ajuda");
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(93, 93, 93)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(52, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(txtPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 610, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+    jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+    jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagens/icons8-to-go-24.png"))); // NOI18N
+    jMenuItem4.setText("Sobre");
+    jMenu2.add(jMenuItem4);
+
+    jMenuBar1.add(jMenu2);
+
+    setJMenuBar(jMenuBar1);
+
+    javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+    getContentPane().setLayout(layout);
+    layout.setHorizontalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addContainerGap(87, Short.MAX_VALUE)
+            .addComponent(txtPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 610, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(18, 18, 18)
+            .addComponent(btnPesquisa)
+            .addGap(114, 114, 114))
+        .addGroup(layout.createSequentialGroup()
+            .addGap(93, 93, 93)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 512, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btnExcluirTabela, javax.swing.GroupLayout.DEFAULT_SIZE, 42, Short.MAX_VALUE)
+                        .addComponent(btnAlterarTabela, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+    );
+    layout.setVerticalGroup(
+        layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        .addGroup(layout.createSequentialGroup()
+            .addGap(29, 29, 29)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(btnPesquisa)
-                .addGap(114, 114, 114))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnPesquisa)
-                    .addComponent(txtPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtPesquisa, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGap(18, 18, 18)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(23, 23, 23)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(11, Short.MAX_VALUE))
-        );
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(btnExcluirTabela)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(btnAlterarTabela)))
+            .addContainerGap(11, Short.MAX_VALUE))
+    );
 
-        pack();
+    pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtCodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoActionPerformed
@@ -339,19 +378,10 @@ public class Tela_Agenda extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCodigoActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        try {
-            Contato c = new Contato();
-            c.setNome(txtNome.getText());
-            c.setEndereco(txtEndereco.getText());
-            c.setTelefone(txtTelefone.getText());
-            c.setEmail(txtEmail.getText());
-            c.setSexo(txtSexo.getText());
-            Banco dao = new Banco();
-            dao.adicionaContato(c);
-            JOptionPane.showMessageDialog(null, "Cadastro feito com sucesso!!!");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
-        }
+        if(verificarDados()){
+        cadastro();
+        desabilitarDados();
+}
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
@@ -469,6 +499,81 @@ public class Tela_Agenda extends javax.swing.JFrame {
      
     }//GEN-LAST:event_btnPesquisaActionPerformed
 
+    private void btnAlterarTabelaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarTabelaActionPerformed
+          try{
+            alterarContatoItem();
+            listarContatos();
+        }catch(Exception ex){
+            JOptionPane.showMessageDialog(null, "Problema durante a alteração: " + ex);
+        }
+    }//GEN-LAST:event_btnAlterarTabelaActionPerformed
+
+    private void btnExcluirTabelaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirTabelaActionPerformed
+              try{
+            excluirContatoItem();
+            listarContatos();
+        }catch(Exception ex){
+            JOptionPane.showMessageDialog(null, "Problema durante a exclusão: " + ex);
+        }
+    }//GEN-LAST:event_btnExcluirTabelaActionPerformed
+
+    
+     public boolean verificarDados(){
+      if(!txtNome.getText().equals("") && !txtEndereco.getText().equals("") && !txtEmail.getText().equals("")){
+          return true;
+      }else{
+          JOptionPane.showMessageDialog(null, "Os campos Nome,Endereco ou email não foram preenchidos");
+          return false;
+      }
+  }
+
+
+
+public void cadastro() {
+        try {
+            Contato c = new Contato();
+            c.setNome(txtNome.getText());
+            c.setEndereco(txtEndereco.getText());
+            c.setTelefone(txtTelefone.getText());
+            c.setEmail(txtEmail.getText());
+            c.setSexo(txtSexo.getText());
+            Banco dao = new Banco();
+            dao.adicionaContato(c);
+            JOptionPane.showMessageDialog(null, "Cadastro feito com sucesso!!!");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+     
+    
+  private void alterarContatoItem()throws Exception{
+        if(tblContatos.getSelectedRow()!=-1){
+           if(verificarDados()){
+            Contato c = new Contato();
+            Banco banco = new Banco();
+            c.setId(Integer.valueOf(txtCodigo.getText()));
+            c.setNome(txtNome.getText());
+            c.setEndereco(txtEndereco.getText());
+            c.setTelefone(txtTelefone.getText());
+            c.setEmail(txtEmail.getText());
+            c.setSexo(txtSexo.getText());
+            banco.alterarContato(c);
+            JOptionPane.showMessageDialog(null, "Alteração foi efetuada com sucesso!");
+           }
+        }
+    }
+    
+    private void excluirContatoItem()throws Exception{
+        int resp = JOptionPane.showConfirmDialog(this, "Deseja realmente excluir esse contato", "Confirmação", 
+                JOptionPane.YES_NO_OPTION);
+        if(resp==JOptionPane.YES_NO_OPTION){
+            Banco dao = new Banco();
+            dao.removerItemTabela(contatos.get(tblContatos.getSelectedRow()));
+            mostraPesquisa(contatos);
+        }
+    }
+
+    
    public void habilitaDados() {
         txtNome.setEditable(true);
         txtEndereco.setEditable(true);
@@ -523,7 +628,19 @@ public class Tela_Agenda extends javax.swing.JFrame {
             contatos = dao.getLista("%" + txtPesquisa.getText() + "%");
             mostraPesquisa(contatos);
       }
-
+    private void tblContatosLinhaSelecionado(JTable tabela) {
+        if (tblContatos.getSelectedRow() != -1) {
+            habilitaDados();
+            txtCodigo.setText(String.valueOf(contatos.get(tabela.getSelectedRow()).getId()));
+            txtNome.setText(contatos.get(tabela.getSelectedRow()).getNome());
+            txtEndereco.setText(contatos.get(tabela.getSelectedRow()).getEndereco());
+            txtEmail.setText(contatos.get(tabela.getSelectedRow()).getEmail());
+            txtTelefone.setText(contatos.get(tabela.getSelectedRow()).getTelefone());
+            txtSexo.setText(contatos.get(tabela.getSelectedRow()).getSexo());
+        } else {
+            limparDados();
+        }
+    }
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -558,7 +675,9 @@ public class Tela_Agenda extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAlterar;
+    private javax.swing.JButton btnAlterarTabela;
     private javax.swing.JButton btnExcluir;
+    private javax.swing.JButton btnExcluirTabela;
     private javax.swing.JButton btnNovo;
     private javax.swing.JButton btnPesquisa;
     private javax.swing.JButton btnSair;
@@ -577,9 +696,9 @@ public class Tela_Agenda extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JMenuItem mnCodigo;
     private javax.swing.JMenuItem mnNome;
+    private javax.swing.JTable tblContatos;
     private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtEndereco;
